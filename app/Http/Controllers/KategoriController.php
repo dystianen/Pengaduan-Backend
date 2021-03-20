@@ -27,7 +27,7 @@ class KategoriController extends Controller
         return $this->response->successData($data);
     }
 
-    public function getById($id)
+    public function getId($id)
     {   
         $data["kategori"] = Kategori::where('id_kategori', $id)->get();
 

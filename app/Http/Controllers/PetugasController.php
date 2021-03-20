@@ -27,7 +27,7 @@ class PetugasController extends Controller
         return $this->response->successData($data);
     }
 
-    public function getById($id)
+    public function getId($id)
     {   
         $data["user"] = User::where('id', $id)->get();
 

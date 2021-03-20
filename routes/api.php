@@ -17,52 +17,46 @@ Route::group(['middleware' => ['jwt.verify:admin,petugas,masyarakat']], function
     Route::post('logout', [LoginController::class,'logout']);
 });
 
-//AKSES UNTUK HALAMAN PANEL ADMIN
-Route::group(['middleware' => ['jwt.verify:admin']], function () { //untuk hak akses admin dan petugas
-    //MASYARAKAT
-	Route::get('masyarakat', [MasyarakatController::class, 'getAll']); //get all
-	Route::get('masyarakat/{id}', [MasyarakatController::class, 'getById']); //get all
-	Route::get('masyarakat/{limit}/{offset}', [MasyarakatController::class, 'getAll']); //get all dengan limit
-    Route::put('masyarakat/{id_user}', [MasyarakatController::class, 'update']); //update
-    Route::delete('masyarakat/{id_user}', [MasyarakatController::class, 'delete']); //delete
+// API ADMIN
+Route::group(['middleware' => ['jwt.verify:admin']], function () { //untuk hak akses admin
+    //API MASYARAKAT
+	Route::get('masyarakat', [MasyarakatController::class, 'getAll']);
+	Route::get('masyarakat/{id}', [MasyarakatController::class, 'getId']);
+	Route::get('masyarakat/{limit}/{offset}', [MasyarakatController::class, 'getAll']);
+    Route::put('masyarakat/{id_user}', [MasyarakatController::class, 'update']);
+    Route::delete('masyarakat/{id_user}', [MasyarakatController::class, 'delete']);
 
-    //PETUGAS
-	Route::get('petugas', [PetugasController::class, 'getAll']); //get all
-	Route::get('petugas/{id}', [PetugasController::class, 'getById']); //get all
-	Route::get('petugas/{limit}/{offset}', [PetugasController::class, 'getAll']); //get all dengan limit
-    Route::post('petugas', [PetugasController::class, 'insert']); //insert
-    Route::put('petugas/{id_user}', [PetugasController::class, 'update']); //update
-    Route::delete('petugas/{id_user}', [PetugasController::class, 'delete']); //delete
+    //API PETUGAS
+	Route::get('petugas', [PetugasController::class, 'getAll']);
+	Route::get('petugas/{id}', [PetugasController::class, 'getId']);
+	Route::get('petugas/{limit}/{offset}', [PetugasController::class, 'getAll']);
+    Route::post('petugas', [PetugasController::class, 'insert']);
+    Route::put('petugas/{id_user}', [PetugasController::class, 'update']);
+    Route::delete('petugas/{id_user}', [PetugasController::class, 'delete']);
 
-    //KATEGORI PENGADUAN
-	Route::get('kategori', [KategoriController::class, 'getAll']); //get all
-	Route::get('kategori/{id_kategori}', [KategoriController::class, 'getById']); //get all
-	Route::get('kategori/{limit}/{offset}', [KategoriController::class, 'getAll']); //get all dengan limit
-    Route::post('kategori', [KategoriController::class, 'insert']); //insert
-    Route::put('kategori/{id_user}', [KategoriController::class, 'update']); //update
-    Route::delete('kategori/{id_user}', [KategoriController::class, 'delete']); //delete
+    //API KATEGORI PENGADUAN
+	Route::get('kategori', [KategoriController::class, 'getAll']); 
+	Route::get('kategori/{id_kategori}', [KategoriController::class, 'getId']);
+	Route::get('kategori/{limit}/{offset}', [KategoriController::class, 'getAll']);
+    Route::post('kategori', [KategoriController::class, 'insert']);
+    Route::put('kategori/{id_user}', [KategoriController::class, 'update']);
+    Route::delete('kategori/{id_user}', [KategoriController::class, 'delete']);
 
-    //REPORT
-    Route::post('pengaduan/report', [PengaduanController::class, 'report']); //get all
-
+    //API REPORT
+    Route::post('pengaduan/report', [PengaduanController::class, 'report']);
 });
 
 Route::group(['middleware' => ['jwt.verify:admin,petugas']], function () {
-    //PENGADUAN
-	Route::get('pengaduan', [PengaduanController::class, 'getAllPengaduan']); //get all
-	Route::get('pengaduan/{id_pengaduan}', [PengaduanController::class, 'getById']); //get all
-	Route::get('pengaduan/{limit}/{offset}', [PengaduanController::class, 'getAllPengaduan']); //get all by limit
-	Route::post('pengaduan/status', [PengaduanController::class, 'changeStatus']); //ubah status pengaduan
-	Route::post('pengaduan/tanggapan', [TanggapanController::class, 'send']); //memasukan tanggapan
-
-
+    //API PENGADUAN
+	Route::get('pengaduan', [PengaduanController::class, 'getAllPengaduan']);
+	Route::get('pengaduan/{id_pengaduan}', [PengaduanController::class, 'getId']);
+	Route::get('pengaduan/{limit}/{offset}', [PengaduanController::class, 'getAllPengaduan']);
+	Route::post('pengaduan/status', [PengaduanController::class, 'changeStatus']);
+	Route::post('pengaduan/tanggapan', [TanggapanController::class, 'send']); //input tanggapan
 });
 
-//AKSES UNTUK HALAMAN MASYARAKAT
+//API MASYARAKAT AKSES
 Route::group(['middleware' => ['jwt.verify:masyarakat']], function () { //untuk hak akses masyarakat
     //PENGADUAN
-	Route::get('masyarakat/pengaduan', [PengaduanController::class, 'getAllPengaduan']); //get all
-	Route::get('masyarakat/pengaduan/{limit}/{offset}', [PengaduanController::class, 'getAllPengaduan']); //get all
-	Route::post('masyarakat/pengaduan', [PengaduanController::class, 'insert']); //insert
-
+	Route::post('masyarakat/pengaduan', [PengaduanController::class, 'insert']);
 });
