@@ -66,6 +66,7 @@ class MasyarakatController extends Controller
         $validator = Validator::make($request->all(), [
 			'nik' => 'required|numeric',
 			'nama' => 'required|string|max:255',
+			'username' => 'required|string|max:255|unique:Users',
 			'password' => 'required|string|min:6',
 			'telp' => 'required|string|min:10'
 		]);
@@ -75,7 +76,9 @@ class MasyarakatController extends Controller
 		}
 
 		$user = User::where('id', $id)->first();
+		$user->nik 	= $request->nik;
 		$user->nama 	= $request->nama;
+		$user->username = $request->username;
         $user->password = Hash::make($request->password);
 		$user->telp 	= $request->telp;
 		$user->save();

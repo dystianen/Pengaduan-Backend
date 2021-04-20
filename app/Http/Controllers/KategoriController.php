@@ -21,7 +21,7 @@ class KategoriController extends Controller
         if($limit == NULL && $offset == NULL){
             $data["kategori"] = Kategori::get();
         } else {
-            $data["kategori"] = Pengaduan::take($limit)->skip($offset)->get();
+            $data["kategori"] = kategori::take($limit)->skip($offset)->get();
         }
 
         return $this->response->successData($data);

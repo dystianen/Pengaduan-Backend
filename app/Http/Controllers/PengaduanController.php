@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Pengaduan;
 use JWTAuth;
 use DB;
+use Carbon\Carbon;
 
 class PengaduanController extends Controller
 {
@@ -18,24 +19,24 @@ class PengaduanController extends Controller
 
         $this->user = JWTAuth::parseToken()->authenticate();
     }
-
+    
     public function getAllPengaduan($limit = NULL, $offset = NULL)
     {
         if($this->user->level == 'masyarakat'){
-            $data["count"] = Pengaduan::where('id_user', '=', $this->user->id)->count();
-
-            if($limit == NULL && $offset == NULL){
-                $data["pengaduan"] = Pengaduan::where('id_user', '=', $this->user->id)->orderBy('tgl_pengaduan', 'desc')->with('kategori')->get();
+           $data["count"] = Pengaduan::where('id_user', '=', $this->user->id)->count();
+           
+           if($limit == NULL && $offset == NULL){
+               $data["pengaduan"] = Pengaduan::where('id_user', '=', $this->user->id)->orderBy('tgl_pengaduan', 'desc')->with('kategori', 'tanggapan', 'user')->get();
             } else {
-                $data["pengaduan"] = Pengaduan::where('id_user', '=', $this->user->id)->orderBy('tgl_pengaduan', 'desc')->with('kategori')->take($limit)->skip($offset)->get();
+                $data["pengaduan"] = Pengaduan::where('id_user', '=', $this->user->id)->orderBy('tgl_pengaduan', 'desc')->with('kategori', 'tanggapan', 'user')->take($limit)->skip($offset)->get();
             }
         } else {
             $data["count"] = Pengaduan::count();
-
+            
             if($limit == NULL && $offset == NULL){
-                $data["pengaduan"] = Pengaduan::orderBy('tgl_pengaduan', 'desc')->with('kategori')->get();
+                $data["pengaduan"] = Pengaduan::orderBy('tgl_pengaduan', 'desc')->with('kategori','tanggapan', 'user')->get();
             } else {
-                $data["pengaduan"] = Pengaduan::orderBy('tgl_pengaduan', 'desc')->with('kategori')->take($limit)->skip($offset)->get();
+                $data["pengaduan"] = Pengaduan::orderBy('tgl_pengaduan', 'desc')->with('kategori', 'tanggapan', 'user')->take($limit)->skip($offset)->get();
             }
         }
 
@@ -44,7 +45,7 @@ class PengaduanController extends Controller
 
     public function getId($id)
     {   
-        $data["pengaduan"] = Pengaduan::where('id_pengaduan', $id)->with(['kategori','tanggapan'])->get();
+        $data["pengaduan"] = Pengaduan::where('id_pengaduan', $id)->with(['kategori','tanggapan', 'user'])->get();
 
         return $this->response->successData($data);
     }
@@ -75,8 +76,9 @@ class PengaduanController extends Controller
 		$pengaduan->save();
 
         $data = Pengaduan::where('id_pengaduan','=', $pengaduan->id)->first();
-        return $this->response->successResponseData('Data pengaduan berhasil terkirim', $data);
+        return $this->response->successResponse('Data pengaduan berhasil terkirim');
     }
+
 
     public function changeStatus(Request $request)
     {
@@ -89,40 +91,23 @@ class PengaduanController extends Controller
             return $this->response->errorResponse($validator->errors());
 		}
 
-		$pengaduan          = Pengaduan::where('id_pengaduan', $request->id_pengaduan)->first();
-		$pengaduan->status  = $request->status;
-		$pengaduan->save();
+		$data          = Pengaduan::where('id_pengaduan', $request->id_pengaduan)->first();
+		$data->tgl_pengaduan  = Carbon::now();
+		$data->status  = $request->status;
+		$data->save();
 
-        return $this->response->successResponse('Status berhasil diubah');
+        return $this->response->successResponseData('Status berhasil diubah', $data);
     }
 
-    public function report(Request $request)
+    public function destroy($id_pengaduan)
     {
-        $validator = Validator::make($request->all(), [
-			'tahun' => 'required|numeric',
-		]);
+        $delete = Pengaduan::where('id_pengaduan', $id_pengaduan)->delete();
 
-		if($validator->fails()){
-            return $this->response->errorResponse($validator->errors());
-		}
-
-        $query = DB::table('pengaduan')
-                    ->select('pengaduan.tgl_pengaduan', 'pengaduan.isi_laporan', 'pengaduan.status', 'kategori.nama_kategori', 'users.nama')
-                    ->join('users', 'users.id', '=', 'pengaduan.id_user')
-                    ->join('kategori', 'kategori.id_kategori', '=', 'pengaduan.id_kategori')
-                    ->whereYear('pengaduan.tgl_pengaduan', '=', $request->tahun);
-
-        if($request->bulan != NULL){
-            $query->WhereMonth('pengaduan.tgl_pengaduan', '=', $request->bulan);
+        if($delete){
+            return $this->response->successResponse('Data petugas berhasil dihapus');
+        } else {
+            return $this->response->errorResponse('Data petugas gagal dihapus');
         }
-        if($request->tgl != NULL){
-            $query->WhereDay('pengaduan.tgl_pengaduan', '=', $request->tgl);
-        }
-        
-        $data = $query->get();
-        
-        return $this->response->successData($data);
     }
-    
 
 }

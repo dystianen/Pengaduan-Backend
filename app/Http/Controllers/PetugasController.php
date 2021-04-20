@@ -41,7 +41,6 @@ class PetugasController extends Controller
 			'username' => 'required|string|max:50|unique:Users',
 			'password' => 'required|string|min:6',
 			'telp' => 'required|string|min:10',
-			'level' => 'required|string',
 		]);
 
 		if($validator->fails()){
@@ -49,11 +48,12 @@ class PetugasController extends Controller
 		}
 
 		$user = new User();
+        $user->nik      = $request->nik;
 		$user->nama 	= $request->nama;
 		$user->username = $request->username;
         $user->password = Hash::make($request->password);
 		$user->telp 	= $request->telp;
-		$user->level 	= $request->level;;
+		$user->level 	= 'petugas';;
 		$user->save();
 
         $data = User::where('username','=', $request->username)->first();
@@ -65,7 +65,6 @@ class PetugasController extends Controller
         $validator = Validator::make($request->all(), [
 			'nama' => 'required|string|max:255',
 			'telp' => 'required|string|min:10',
-			'level' => 'required|string',
 		]);
 
 		if($validator->fails()){
@@ -78,10 +77,9 @@ class PetugasController extends Controller
             $user->password = Hash::make($request->password);
         }
 		$user->telp 	= $request->telp;
-		$user->level 	= $request->level;
 		$user->save();
 
-        return $this->response->successResponse('Data petugas berhasil diubah');
+        return $this->response->successResponse('Data petugas berhasil diupdate');
     }
 
     public function delete($id)

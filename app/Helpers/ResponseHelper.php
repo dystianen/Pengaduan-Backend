@@ -29,6 +29,12 @@ class ResponseHelper
         return response()->json([
             'success' => false,
             'message' => $message
-        ]);
+        ]); 
+    }
+    public function expiredResponse($message) {
+        return response()->json([
+            'success' => false,
+            'message' => $message
+        ]); 
     }
 }

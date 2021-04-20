@@ -43,6 +43,6 @@ class TanggapanController extends Controller
 		$tanggapan->id_petugas     = $this->user->id; //ambil id_petugas dari JWT token yang sedang aktif
 		$tanggapan->save();
 
-        return $this->response->successResponse('Data tanggapan berhasil dikirim');
+        return $this->response->successResponseData('Data tanggapan berhasil dikirim', $tanggapan);
     }
 }

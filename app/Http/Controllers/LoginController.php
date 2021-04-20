@@ -51,8 +51,7 @@ class LoginController extends Controller
 		return $this->response->successResponseData('Authentication success!', $user);
 	}
 
-
-    public function register(Request $request)
+	public function registerPetugas(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
 			'nik' => 'required|string|max:20',
@@ -70,15 +69,44 @@ class LoginController extends Controller
 		$user->nik 		= $request->nik;
 		$user->nama 	= $request->nama;
 		$user->username = $request->username;
-		$user->telp 	= $request->telp;
-		$user->level 	= 'masyarakat';
 		$user->password = Hash::make($request->password);
+		$user->telp 	= $request->telp;
+		$user->level 	= 'petugas';
 		$user->save();
 
 		$token = JWTAuth::fromUser($user);
 
         $data = User::where('username','=', $request->username)->first();
-        return $this->response->successResponseData('Data masyarakat berhasil ditambahkan', $data);
+        return $this->response->successResponseData('Petugas berhasil registrasi', $data);
+	}
+
+    public function registerMasyarakat(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'nik' => 'required|string|max:20',
+			'nama' => 'required|string|max:255',
+			'username' => 'required|string|max:50|unique:Users',
+			'password' => 'required|string|min:6',
+			'telp' => 'required|string|min:10',
+		]);
+
+		if($validator->fails()){
+            return $this->response->errorResponse($validator->errors());
+		}
+
+		$user = new User();
+		$user->nik 		= $request->nik;
+		$user->nama 	= $request->nama;
+		$user->username = $request->username;
+		$user->password = Hash::make($request->password);
+		$user->telp 	= $request->telp;
+		$user->level 	= 'masyarakat';
+		$user->save();
+
+		$token = JWTAuth::fromUser($user);
+
+        $data = User::where('username','=', $request->username)->first();
+        return $this->response->successResponseData('Masyarakat berhasil registrasi', $data);
 	}
 
 
