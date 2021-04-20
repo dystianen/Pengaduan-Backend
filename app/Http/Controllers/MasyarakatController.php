@@ -63,18 +63,6 @@ class MasyarakatController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-			'nik' => 'required|numeric',
-			'nama' => 'required|string|max:255',
-			'username' => 'required|string|max:255|unique:Users',
-			'password' => 'required|string|min:6',
-			'telp' => 'required|string|min:10'
-		]);
-
-		if($validator->fails()){
-            return $this->response->errorResponse($validator->errors());
-		}
-
 		$user = User::where('id', $id)->first();
 		$user->nik 	= $request->nik;
 		$user->nama 	= $request->nama;

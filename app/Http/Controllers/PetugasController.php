@@ -16,12 +16,12 @@ class PetugasController extends Controller
 
     public function getAll($limit = NULL, $offset = NULL)
     {
-        $data["count"] = User::where('level','<>','masyarakat')->count();
+        $data["count"] = User::where('level','=','petugas')->count();
         
         if($limit == NULL && $offset == NULL){
-            $data["user"] = User::where('level','<>','masyarakat')->get();
+            $data["user"] = User::where('level','=','petugas')->get();
         } else {
-            $data["user"] = User::where('level','<>','masyarakat')->take($limit)->skip($offset)->get();
+            $data["user"] = User::where('level','=','petugas')->take($limit)->skip($offset)->get();
         }
 
         return $this->response->successData($data);
@@ -53,7 +53,7 @@ class PetugasController extends Controller
 		$user->username = $request->username;
         $user->password = Hash::make($request->password);
 		$user->telp 	= $request->telp;
-		$user->level 	= 'petugas';;
+		$user->level 	= 'petugas';
 		$user->save();
 
         $data = User::where('username','=', $request->username)->first();

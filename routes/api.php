@@ -24,6 +24,7 @@ Route::group(['middleware' => ['jwt.verify:admin']], function () { //untuk hak a
 	Route::get('masyarakat', [MasyarakatController::class, 'getAll']);
 	Route::get('masyarakat/{id}', [MasyarakatController::class, 'getId']);
 	Route::get('masyarakat/{limit}/{offset}', [MasyarakatController::class, 'getAll']);
+    Route::post('masyarakat', [MasyarakatController::class, 'insert']);
     Route::put('masyarakat/{id_user}', [MasyarakatController::class, 'update']);
     Route::delete('masyarakat/{id_user}', [MasyarakatController::class, 'delete']);
 
