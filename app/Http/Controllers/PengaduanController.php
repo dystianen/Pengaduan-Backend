@@ -45,7 +45,7 @@ class PengaduanController extends Controller
 
     public function getId($id)
     {   
-        $data["pengaduan"] = Pengaduan::where('id_pengaduan', $id)->with(['kategori','tanggapan', 'user'])->get();
+        $data["pengaduan"] = Pengaduan::where('id_pengaduan', $id)->with('kategori','tanggapan', 'user')->get();
 
         return $this->response->successData($data);
     }

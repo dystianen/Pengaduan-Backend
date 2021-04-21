@@ -66,6 +66,7 @@ Route::group(['middleware' => ['jwt.verify:masyarakat']], function () { //untuk 
     //PENGADUAN
     // Route::get('masyarakat/pengaduan' => )
 	Route::get('masyarakat/pengaduan/{limit}/{offset}', [PengaduanController::class, 'getAllPengaduan']); //get all
+	Route::get('detail/{id_pengaduan}', [PengaduanController::class, 'getId']);
 	Route::post('masyarakat/pengaduan', [PengaduanController::class, 'insert']);
 	Route::delete('masyarakat/pengaduan/{id_pengaduan}', [PengaduanController::class, 'destroy']);
     
